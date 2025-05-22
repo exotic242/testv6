@@ -120,13 +120,13 @@ def export_hours():
         return redirect("/login")
 
     logs = get_student_logs(session["student_id"])
-    si = [["Date", "Time", "Activity", "Hours"]]
+    si = [["Date", "Time", "Activity", "Hours", "Reflection"]]
     for row in logs:
-        si.append([row["date"], row["time"], row["activity"], row["hours"]])
+        si.append([row["date"], row["time"], row["activity"], row["hours"], row["reflection"]])
 
-    response = Response("
-".join([",".join(map(str, row)) for row in si]), mimetype="text/csv")
-    response.headers["Content-Disposition"] = f"attachment; filename=my_hours_{session['student_id']}.csv"
+    csv_data = "\n".join([",".join(map(str, r)) for r in si])
+    response = Response(csv_data, mimetype="text/csv")
+    response.headers["Content-Disposition"] = f"attachment; filename=myhours{session['student_id']}.csv"
     return response
 
 @app.route("/set-goal", methods=["POST"])
