@@ -36,7 +36,39 @@ def check_login(email, password):
 
 def log_hours(student_id, date, time, activity, hours, reflection=""):
     logs_ws = get_worksheet("logs")
-    logs_ws.append_row([student_id, date, time, activity, hours, reflection])
+    students_ws = get_worksheet("students")
+    student_records = students_ws.get_all_records()
+
+    # Find student’s name and surname
+    for row in student_records:
+        if str(row["student_id"]) == student_id:
+            surname = row["surname"]
+            name = row["name"]
+            break
+    else:
+        surname = ""
+        name = ""
+
+    # Append to logs with correct structure
+    logs_ws.append_row([
+        student_id,      # A: student_id
+        surname,         # B: surname
+        name,            # C: name
+        date,            # D: date
+        time,            # E: time
+        "",              # F: ip address (placeholder)
+        "",              # G: location (placeholder)
+        activity,        # H: activity
+        hours,           # I: hours achieved
+        reflection       # J: reflection
+    ])
+
+    # Update total hours in students sheet
+    for i, row in enumerate(student_records):
+        if str(row["student_id"]) == student_id:
+            new_total = float(row["total_hours"]) + float(hours)
+            students_ws.update_cell(i + 2, 6, new_total)  # Column 6 = total_hours
+            break
 
     students_ws = get_worksheet("students")
     records = students_ws.get_all_records()
