@@ -35,40 +35,54 @@ def check_login(email, password):
     return None
 
 def log_hours(student_id, date, time, activity, hours, reflection=""):
+    student_id = str(student_id).zfill(4)
+
     logs_ws = get_worksheet("logs")
     students_ws = get_worksheet("students")
-    student_records = students_ws.get_all_records()
 
-    # Find student’s name and surname
-    for row in student_records:
-        if str(row["student_id"]) == student_id:
-            surname = row["surname"]
-            name = row["name"]
+    students_data = students_ws.get_all_values()
+    headers = students_data[0]
+    student_rows = students_data[1:]  # skip header
+
+    # Build a map of column names to index for safety
+    header_index = {key.lower(): i for i, key in enumerate(headers)}
+
+    # Find student by ID
+    row_index = -1
+    name = ""
+    surname = ""
+    for i, row in enumerate(student_rows):
+        if row[header_index["student_id"]] == student_id:
+            surname = row[header_index["surname"]]
+            name = row[header_index["name"]]
+            row_index = i + 2  # Adjust for 1-based index + header row
             break
-    else:
-        surname = ""
-        name = ""
 
-    # Append to logs with correct structure
+    if row_index == -1:
+        raise ValueError(f"Student ID {student_id} not found in 'students' sheet")
+
+    # Append log (autofill name/surname in correct column order)
     logs_ws.append_row([
-        student_id,      # A: student_id
-        surname,         # B: surname
-        name,            # C: name
-        date,            # D: date
-        time,            # E: time
-        "",              # F: ip address (placeholder)
-        "",              # G: location (placeholder)
-        activity,        # H: activity
-        hours,           # I: hours achieved
-        reflection       # J: reflection
+        student_id,  # A
+        surname,     # B
+        name,        # C
+        date,        # D
+        time,        # E
+        "",          # F: ip
+        "",          # G: location
+        activity,    # H
+        hours,       # I
+        reflection   # J
     ])
 
-    # Update total hours in students sheet
-    for i, row in enumerate(student_records):
-        if str(row["student_id"]) == student_id:
-            new_total = float(row["total_hours"]) + float(hours)
-            students_ws.update_cell(i + 2, 6, new_total)  # Column 6 = total_hours
-            break
+    # Safely update total_hours in 'students'
+    try:
+        current_total = float(row[header_index["total hours"]])
+    except (ValueError, IndexError):
+        current_total = 0.0
+
+    new_total = current_total + float(hours)
+    students_ws.update_cell(row_index, header_index["total hours"] + 1, new_total)
 
     students_ws = get_worksheet("students")
     records = students_ws.get_all_records()
