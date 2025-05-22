@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Log Hours</h2>
+<form method="POST">
+    <input type="date" name="date" required>
+    <input type="time" name="time" required>
+    <select name="activity_select" id="activityDropdown" required>
+        <option value="">-- Select Activity --</option>
+        <option value="Tutoring">Tutoring</option>
+        <option value="Cleaning">Cleaning</option>
+        <option value="Fundraiser">Fundraiser</option>
+        <option value="Admin Help">Admin Help</option>
+        <option value="Other">Other</option>
+    </select>
+    <input type="text" name="activity_other" id="otherField" placeholder="Specify activity..." style="display:none;">
+    <input type="number" name="hours" step="0.1" placeholder="Hours" required>
+    <textarea name="reflection" placeholder="What did you learn or reflect on?" rows="3"></textarea>
+    <button type="submit" title="Submit your community service hours">Submit</button>
+</form>
+<script>
+document.getElementById("activityDropdown").addEventListener("change", function() {
+    document.getElementById("otherField").style.display =
+        this.value === "Other" ? "block" : "none";
+});
+</script>
+{% endblock %}

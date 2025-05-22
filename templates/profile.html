@@ -1,0 +1,14 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Profile</h2>
+<ul>
+    <li><strong>Student ID:</strong> {{ info.student_id }}</li>
+    <li><strong>Name:</strong> {{ info.name }} {{ info.surname }}</li>
+    <li><strong>Email:</strong> {{ info.email }}</li>
+    <li><strong>Grade:</strong> {{ info.grade }}</li>
+    <li><strong>School:</strong> {{ info.school }}</li>
+    <li><strong>Total Hours:</strong> {{ total }}</li>
+    <li><strong>Goal:</strong> {{ goal if goal else "No goal set" }}</li>
+</ul>
+{% endblock %}

@@ -1,0 +1,18 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Leaderboard</h2>
+<table>
+    <tr><th>Rank</th><th>ID</th><th>Name</th><th>Grade</th><th>School</th><th>Total Hours</th></tr>
+    {% for student in records %}
+    <tr style="background-color: {{ loop.index0 % 2 == 0 and '#f9f9f9' or '#ffffff' }}; font-weight: {{ 'bold' if loop.index <= 3 else 'normal' }}">
+        <td>{{ loop.index }}</td>
+        <td>{{ student.student_id }}</td>
+        <td>{{ student.name }}</td>
+        <td>{{ student.grade }}</td>
+        <td>{{ student.school }}</td>
+        <td>{{ student.total_hours }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,39 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0 20px;
+}
+h2 {
+    text-align: center;
+    margin-top: 30px;
+}
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+input, button, textarea, select {
+    padding: 8px;
+    font-size: 14px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+.flash-success {
+    color: green;
+    font-weight: bold;
+}
+.flash-error {
+    color: red;
+    font-weight: bold;
+}

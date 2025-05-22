@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Hours Tracker</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" href="/static/icons/icon-192x192.png">
+    <meta name="theme-color" content="#0a73ff">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/static/service-worker.js');
+            });
+        }
+    </script>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        {% if session.get("student_id") %}
+            <a href="/log">Log Hours</a>
+            <a href="/my-hours">My Hours</a>
+            <a href="/leaderboard">Leaderboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+            <a href="/login">Login</a>
+        {% endif %}
+        <a href="/admin-login">Admin</a>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul id="flash-messages">
+        {% for category, message in messages %}
+          <li class="flash-{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <script>
+        setTimeout(() => {
+            const flashBox = document.getElementById("flash-messages");
+            if (flashBox) flashBox.style.display = "none";
+        }, 3000);
+    </script>
+</body>
+</html>

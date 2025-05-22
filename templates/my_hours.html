@@ -1,0 +1,80 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>My Hours</h2>
+
+<p>Total Hours Logged: {{ total }}</p>
+
+{% if goal %}
+    <p>Your Goal: {{ goal }} hours</p>
+    <div style="border: 1px solid #ccc; width: 100%; height: 20px;">
+        <div style="background: green; height: 100%; width: {{ (total / goal * 100) | round(0, 'floor') }}%;">
+        </div>
+    </div>
+    <p>{{ (total / goal * 100) | round(1) }}% complete</p>
+{% else %}
+    <p>You haven’t set a goal yet!</p>
+{% endif %}
+
+<form method="POST" action="/set-goal">
+    <input type="number" name="goal" step="1" placeholder="Set new goal" required>
+    <button type="submit" title="Set your hour goal">Update Goal</button>
+</form>
+
+<form action="/export-hours" method="GET">
+    <button type="submit" title="Download your logs as a CSV file">Download CSV</button>
+</form>
+
+<form action="/certificate" method="GET" target="_blank">
+    <button type="submit" title="Generate a printable certificate of your hours">Generate Certificate</button>
+</form>
+
+<input type="text" id="searchInput" placeholder="Search logs..." style="margin-bottom: 10px; padding: 6px; width: 100%;">
+
+<table id="logsTable">
+    <tr><th>Date</th><th>Time</th><th>Activity</th><th>Hours</th><th>Reflection</th></tr>
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.date }}</td>
+        <td>{{ log.time }}</td>
+        <td>{{ log.activity }}</td>
+        <td>{{ log.hours }}</td>
+        <td>{{ log.reflection }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Activity Breakdown</h2>
+<canvas id="activityChart" width="400" height="400"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const logs = {{ logs | tojson }};
+    const activityTotals = {};
+    logs.forEach(log => {
+        const activity = log.activity;
+        const hours = parseFloat(log.hours);
+        activityTotals[activity] = (activityTotals[activity] || 0) + hours;
+    });
+    const data = {
+        labels: Object.keys(activityTotals),
+        datasets: [{
+            label: "Hours by Activity",
+            data: Object.values(activityTotals),
+            backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#E91E63', '#9C27B0']
+        }]
+    };
+    new Chart(document.getElementById("activityChart"), { type: "pie", data: data });
+</script>
+
+<script>
+document.getElementById("searchInput").addEventListener("input", function() {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#logsTable tr:not(:first-child)");
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+</script>
+{% endblock %}

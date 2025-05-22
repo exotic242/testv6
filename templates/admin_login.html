@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Login</h2>
+<form method="POST">
+    <input type="password" name="password" placeholder="Enter admin password" required>
+    <button type="submit" title="Access admin tools (password protected)">Enter Admin Mode</button>
+</form>
+{% endblock %}

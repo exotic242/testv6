@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate of Community Service</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            text-align: center;
+            padding: 40px;
+        }
+        .certificate {
+            border: 5px solid #333;
+            padding: 40px;
+            max-width: 700px;
+            margin: auto;
+        }
+        h1 {
+            font-size: 32px;
+        }
+        .details {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <h1>Certificate of Community Service</h1>
+        <p>This certifies that</p>
+        <h2>{{ info.name }} {{ info.surname }}</h2>
+        <p>from {{ info.school }}, Grade {{ info.grade }}</p>
+        <div class="details">
+            has completed a total of <strong>{{ total }} hours</strong><br>
+            in community service activities.
+        </div>
+        <p style="margin-top: 40px;">Date Issued: {{ current_date }}</p>
+    </div>
+</body>
+</html>
