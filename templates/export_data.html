@@ -1,0 +1,18 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Export Logs</title>
+</head>
+<body>
+    <h1>Export Logs to CSV</h1>
+    <form action="/export-logs" method="POST">
+        <label>Select log type:</label>
+        <select name="log_type">
+            <option value="all">All Logs</option>
+            <option value="flagged">Flagged Logs</option>
+        </select>
+        <button type="submit">Download CSV</button>
+    </form>
+</body>
+</html>

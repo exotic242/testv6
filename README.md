@@ -1,101 +1,82 @@
 
-# Student Hours Tracker (Community Service App)
+# HourTracker Web App
 
-This is a full-featured web application built with Flask and Google Sheets that allows high school students to track their community service hours, set personal goals, and download certificates of participation. It is designed to be installable as a Progressive Web App (PWA) and is fully deployable on Render with GitHub integration.
-
----
+A fully functional Flask + Google Sheets-based Progressive Web App (PWA) for logging, tracking, and managing student community service hours.
 
 ## Features
 
-- **Student Registration & Login**
-- **Google Sheets Backend** (no SQL required)
-- **Log Hours** with date, time, activity, and reflection
-- **Set & Track Hour Goals** with progress bar
-- **Live Leaderboard** sorted by total hours
-- **Downloadable CSV** of your personal logs
-- **Generate Certificate** (PDF printable)
-- **Admin Mode** (password-protected)
-- **Search/Filter Logs**
-- **Activity Type Dropdown + Reflection**
-- **Activity Chart** (Pie graph via Chart.js)
-- **Tooltips for All Buttons**
+### Core Functionality
+- **Student Registration** with school, grade, email, and password
+- **Smart Hour Logging**
+  - Start/Stop button-based logger
+  - Captures activity, IP, location, device info
+  - Auto-verifies based on expected duration and metadata
+- **Log Verification System**
+  - Marks logs as `verified`, `unverified`, or `suspicious`
+  - Flags mismatches in device or location
+- **Goal Tracking**
+  - Set personal hour goal
+  - Track total hours logged
+  - Visual progress bar on profile
+- **Log Filters**
+  - Search by activity, date, status
+- **Visual Analytics**
+  - Pie chart summary of hours by activity using Chart.js
+
+### Admin Panel
+- Hardcoded login (`admin` / `admin123`)
+- Access to sensitive logs and dashboard
+
+### Advanced GUI (2025 Upgrade)
+- Responsive mobile-first layout
+- Soft geometric background + dark container overlay
+- Modern fonts and smooth button styling
+
+### PWA Support
+- Includes manifest.json and service worker (optional offline caching)
+- Installable from browser on mobile
 
 ---
 
-## Tech Stack
+## Setup Instructions (Render Compatible)
 
-- Python 3 (Flask)
-- Google Sheets API (`gspread`, `oauth2client`)
-- HTML/CSS + Chart.js
-- Gunicorn (for deployment)
-- PWA-ready (manifest + service worker)
-
----
-
-## File Structure
-
+1. **Install Dependencies**
+```bash
+pip install -r requirements.txt
 ```
-.
-├── app.py                  # Flask routes and session logic
-├── sheets.py               # Google Sheets data access
-├── requirements.txt
+
+2. **Google Sheets Setup**
+- Use `credentials.json` from Google Cloud console
+- Share your spreadsheet with the service account email
+- Create tabs: `students`, `logs`, `admin`
+
+3. **Run the App Locally**
+```bash
+python app.py
+```
+
+4. **Deploy to Render**
+- Connect GitHub repo with this code
+- Set build command: `pip install -r requirements.txt`
+- Set start command: `python app.py`
+- Ensure `credentials.json` is included in `.renderignore` or added as secret
+
+---
+
+## Folder Structure
+```
+├── app.py               # Flask routes and views
+├── sheets.py            # Google Sheets functions
 ├── static/
-│   ├── style.css
-│   ├── manifest.json
-│   ├── service-worker.js
-│   └── icons/
-├── templates/
-│   ├── base.html
-│   ├── register.html
-│   ├── login.html
-│   ├── log_hours.html
-│   ├── my_hours.html
-│   ├── leaderboard.html
-│   ├── profile.html
-│   ├── certificate.html
-│   └── admin_login.html / dashboard.html
+│   └── style.css        # Full responsive + visual theme
+├── templates/           # HTML templates
+│   └── *.html           # Pages for user flow
+├── credentials.json     # Google Sheets service account (private)
+├── requirements.txt     # Python dependencies
+└── README.md
 ```
 
 ---
 
-## Setup Instructions (Local)
-
-1. **Install Python + Pipenv or virtualenv (recommended)**
-2. Clone or unzip the project folder
-3. Place your Google Sheets `credentials.json` file in the root directory
-4. Run:
-   ```
-   pip install -r requirements.txt
-   python app.py
-   ```
-5. Navigate to `http://localhost:5000`
-
----
-
-## Deployment Instructions (Render.com)
-
-1. Push this project to GitHub
-2. Go to [Render](https://render.com)
-3. Click "New Web Service" → Connect to GitHub repo
-4. Set:
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn app:app`
-5. Upload `credentials.json` manually in Render's secret file section
-
----
-
-## Notes
-
-- This app is fully offline-capable when installed as a PWA (except logging)
-- All data is backed by Google Sheets — no database required
-- Perfect for school PATs, portfolio projects, or community service platforms
-
----
-
-## License
-
-MIT License. Free to use and modify.
-
----
-
-**Built with care by [Your Name]**
+## Author & License
+Developed for educational purposes — 2025 capstone. MIT License.

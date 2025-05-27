@@ -11,4 +11,25 @@
     <li><strong>Total Hours:</strong> {{ total }}</li>
     <li><strong>Goal:</strong> {{ goal if goal else "No goal set" }}</li>
 </ul>
+
+<hr>
+<h3>Student Profile</h3>
+<p><strong>ID:</strong> {{ student_info.student_id }}</p>
+<p><strong>Name:</strong> {{ student_info.name }}</p>
+<p><strong>Grade:</strong> {{ student_info.grade }}</p>
+<p><strong>School:</strong> {{ student_info.school }}</p>
+
+<h4>Hours Summary</h4>
+<p><strong>Total Hours Logged:</strong> {{ total_hours }}</p>
+<p><strong>Goal:</strong> {{ goal }}</p>
+<p><strong>Progress:</strong> {{ progress }}%</p>
+
+<div style="background-color: #eee; border-radius: 10px; overflow: hidden; width: 100%; max-width: 400px;">
+  <div style="width: {{ progress }}%; background-color: #28a745; padding: 8px 0; color: white; text-align: center;">
+    {{ progress }}%
+  </div>
+</div>
+
 {% endblock %}
+
+{% if goal == 0 %}<div class="alert alert-info">Set a goal to track your progress!</div>{% endif %}

@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Hours Tracker</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="manifest" href="/static/manifest.json">
@@ -15,8 +16,10 @@
         }
     </script>
 </head>
-<body>
+<body class="fade-in">
     <nav>
+    <div class="nav-brand">HourTracker</div>
+    <div class="nav-links">
         <a href="/">Home</a>
         {% if session.get("student_id") %}
             <a href="/log">Log Hours</a>
@@ -29,7 +32,8 @@
             <a href="/login">Login</a>
         {% endif %}
         <a href="/admin-login">Admin</a>
-    </nav>
+    </div>
+</nav>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -41,7 +45,9 @@
       {% endif %}
     {% endwith %}
 
-    {% block content %}{% endblock %}
+    <div class="container">
+{% block content %}{% endblock %}
+</div>
 
     <script>
         setTimeout(() => {

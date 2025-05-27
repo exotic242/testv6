@@ -1,10 +1,78 @@
 
 {% extends "base.html" %}
 {% block content %}
+
+<div id="smartLogSection">
+    {% if not session.get('log_start') %}
+        
+<form method="POST" action="/start_log">
+    <label for="activity">What activity are you doing?</label>
+    <input type="text" name="activity" title="Describe your activity (e.g. tutoring, cleaning)" title="Enter the name of the activity you are starting" required placeholder="e.g. Tutoring">
+    
+    <label for="expected_hours">How many hours do you expect to do?</label>
+    <input type="number" name="expected_hours" title="Expected duration (in hours)" title="How many hours do you expect to complete?" min="0.5" step="0.5" required placeholder="e.g. 2">
+
+    <button type="submit" onclick="disableStart(this)" title="Click to start logging your community service hours." style="
+        background-color: #28a745;
+        color: white;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        font-size: 16px;
+        border: none;
+        margin-top: 10px;">START</button>
+</form>
+
+            <label for="activity">What activity are you doing?</label>
+            <input type="text" name="activity" title="Describe your activity (e.g. tutoring, cleaning)" title="Enter the name of the activity you are starting" required placeholder="e.g. Tutoring">
+            <button type="submit" onclick="disableStart(this)" title="Click to start logging your community service hours." style="
+                background-color: #28a745;
+                color: white;
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                font-size: 16px;
+                border: none;
+                margin-top: 10px;">START</button>
+        </form>
+    {% else %}
+        
+<form method="POST" action="/stop_log" id="stopForm">
+    <button type="button" onclick="captureMetadataAndStop()" id="stopButton" onclick="disableStop(this)" title="Click to stop logging. This will record your end time and submit the log." style="
+        background-color: #dc3545;
+        color: white;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        font-size: 16px;
+        border: none;
+        margin-top: 10px;">STOP</button>
+</form>
+
+            <button type="submit" onclick="disableStart(this)" title="Click to start logging your community service hours." style="
+                background-color: #dc3545;
+                color: white;
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                font-size: 16px;
+                border: none;
+                margin-top: 10px;">STOP</button>
+        </form>
+    {% endif %}
+</div>
+<hr>
+
 <h2>Log Hours</h2>
+<div class="form-card">
 <form method="POST">
+    <label>Date</label>
     <input type="date" name="date" required>
+
+    <label>Time</label>
     <input type="time" name="time" required>
+
+    <label>Activity</label>
     <select name="activity_select" id="activityDropdown" required>
         <option value="">-- Select Activity --</option>
         <option value="Tutoring">Tutoring</option>
@@ -13,15 +81,79 @@
         <option value="Admin Help">Admin Help</option>
         <option value="Other">Other</option>
     </select>
+
     <input type="text" name="activity_other" id="otherField" placeholder="Specify activity..." style="display:none;">
-    <input type="number" name="hours" step="0.1" placeholder="Hours" required>
-    <textarea name="reflection" placeholder="What did you learn or reflect on?" rows="3"></textarea>
-    <button type="submit" title="Submit your community service hours">Submit</button>
+
+    <label>Hours</label>
+    <input type="number" name="hours" step="0.1" placeholder="e.g. 1.5" id="hoursField" required>
+
+    <label for="reflection">Reflection</label>
+    <textarea name="reflection" title="Write a short reflection about what you did during your logged time." placeholder="What did you learn or reflect on?" rows="3" id="reflectionBox" style="display:none;"></textarea>
+
+    <button type="submit" onclick="disableStart(this)" title="Submit your community service hours">Submit</button>
 </form>
+</div>
+
 <script>
 document.getElementById("activityDropdown").addEventListener("change", function() {
     document.getElementById("otherField").style.display =
         this.value === "Other" ? "block" : "none";
 });
+
+document.getElementById("hoursField").addEventListener("input", function() {
+    document.getElementById("reflectionBox").style.display =
+        this.value && parseFloat(this.value) > 0 ? "block" : "none";
+});
 </script>
 {% endblock %}
+
+<script>
+async function captureMetadataAndStop() {
+    const stopButton = document.getElementById("stopButton");
+    stopButton.disabled = true;
+    stopButton.innerText = "Logging...";
+
+    try {
+        const ipRes = await fetch("https://api.ipify.org?format=json");
+        const ipData = await ipRes.json();
+        const ip = ipData.ip;
+
+        let locationText = "Unavailable";
+        let mapsUrl = "#";
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            locationText = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+            mapsUrl = `https://maps.google.com/?q=${lat},${lon}`;
+
+            const deviceInfo = navigator.userAgent;
+
+            await fetch("/log_metadata", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ip, location_text: locationText, maps_url: mapsUrl, device_info: deviceInfo })
+            });
+
+            document.getElementById("stopForm").submit();
+        }, async (err) => {
+            const deviceInfo = navigator.userAgent;
+
+            await fetch("/log_metadata", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ip, location_text: "Location denied", maps_url: "#", device_info: deviceInfo })
+            });
+
+            document.getElementById("stopForm").submit();
+        });
+    } catch (error) {
+        alert("Could not log metadata.");
+        stopButton.disabled = false;
+        stopButton.innerText = "STOP";
+    }
+}
+</script>
+
+
+<!-- SMART LOGGING ADDITION -->
+<!-- Log Hours with Start/Stop buttons -->

@@ -2,8 +2,13 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Admin Login</h2>
-<form method="POST">
-    <input type="password" name="password" placeholder="Enter admin password" required>
-    <button type="submit" title="Access admin tools (password protected)">Enter Admin Mode</button>
+<form action="{{ url_for('admin_login') }}" method="POST">
+    <label>Username:</label>
+    <input type="text" name="username" required>
+
+    <label>Password:</label>
+    <input type="password" name="password" required>
+
+    <button type="submit">Login</button>
 </form>
 {% endblock %}
