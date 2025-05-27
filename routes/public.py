@@ -10,12 +10,12 @@ def home():
 @public_bp.route("/login", methods=["GET", "POST"])
 def login():
     # Dummy route placeholder
-    return "Login route"
+    return render_template("login.html")
 
 @public_bp.route("/register", methods=["GET", "POST"])
 def register():
     # Dummy route placeholder
-    return "Register route"
+    return render_template("register.html")
 
 @public_bp.route("/logout")
 def logout():

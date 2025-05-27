@@ -35,3 +35,12 @@ def admin_logout():
     session.pop("smart_log", None)
     return redirect("/")
 
+@admin_bp.route("/admin_dashboard")
+def admin_dashboard():
+    # Dummy route placeholder
+    return render_template("admin_dashboard.html")
+
+@admin_bp.route("/admin_logout")
+def admin_logout():
+    # Dummy route placeholder
+    return redirect("/")
