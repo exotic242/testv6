@@ -34,5 +34,5 @@ from flask import current_app, jsonify
 @student_bp.route("/session_debug")
 def session_debug():
     if not current_app.debug:
-    return render_template("403.html"), 403
+     return render_template("403.html"), 403
     return jsonify(dict(session))
